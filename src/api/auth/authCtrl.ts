@@ -37,7 +37,11 @@ const register = async (ctx: any) => {
   const result = Joi.validate(ctx.request.body, schema);
 
   if (result.error) {
+    console.log(result.error.details[0].message);
     ctx.status = 400; // Bad request
+    ctx.body = {
+      message: result.error.details[0].message,
+    };
     return;
   }
 

@@ -77,7 +77,11 @@ var register = function (ctx) { return __awaiter(_this, void 0, void 0, function
                 });
                 result = joi_1.default.validate(ctx.request.body, schema);
                 if (result.error) {
+                    console.log(result.error.details[0].message);
                     ctx.status = 400; // Bad request
+                    ctx.body = {
+                        message: result.error.details[0].message,
+                    };
                     return [2 /*return*/];
                 }
                 _a = ctx.request.body, username = _a.username, email = _a.email, password = _a.password;
