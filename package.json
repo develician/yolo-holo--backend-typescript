@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "start": "cross-env NODE_PATH=src node src",
+    "start": "cross-env NODE_PATH=dist node dist/index.js",
     "start:dev": "cross-env NODE_PATH=dist nodemon --watch dist/ dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
