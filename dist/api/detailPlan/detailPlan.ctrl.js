@@ -82,23 +82,37 @@ var read = function (ctx) { return __awaiter(_this, void 0, void 0, function () 
     });
 }); };
 var create = function (ctx) { return __awaiter(_this, void 0, void 0, function () {
-    var detailPlan;
-    return __generator(this, function (_a) {
-        //   const {
-        //     planId,
-        //     username,
-        //     day,
-        //     destName,
-        //     latitude,
-        //     longitude,
-        //     placeId,
-        //     todoList,
-        //   } = ctx.request.body;
+    var _a, planId, username, day, destName, googleMapEnabled, latitude, longitude, placeId, detailPlan, detailPlan;
+    return __generator(this, function (_b) {
+        _a = ctx.request.body, planId = _a.planId, username = _a.username, day = _a.day, destName = _a.destName, googleMapEnabled = _a.googleMapEnabled, latitude = _a.latitude, longitude = _a.longitude, placeId = _a.placeId;
         try {
-            detailPlan = new detailPlan_1.default(ctx.request.body);
-            detailPlan.save();
-            ctx.body = detailPlan;
-            ctx.status = 201;
+            if (googleMapEnabled) {
+                detailPlan = new detailPlan_1.default({
+                    planId: planId,
+                    username: username,
+                    day: day,
+                    destName: destName,
+                    latitude: latitude,
+                    longitude: longitude,
+                    placeId: placeId,
+                    googleMapEnabled: googleMapEnabled,
+                });
+                detailPlan.save();
+                ctx.body = detailPlan;
+                ctx.status = 201;
+            }
+            else {
+                detailPlan = new detailPlan_1.default({
+                    planId: planId,
+                    username: username,
+                    day: day,
+                    destName: destName,
+                    googleMapEnabled: googleMapEnabled,
+                });
+                detailPlan.save();
+                ctx.body = detailPlan;
+                ctx.status = 201;
+            }
         }
         catch (e) {
             ctx.throw(e, 500);
@@ -158,4 +172,184 @@ var update = function (ctx) { return __awaiter(_this, void 0, void 0, function (
         }
     });
 }); };
-exports.default = { checkObjectId: checkObjectId, read: read, create: create, remove: remove, update: update };
+var listTodo = function (ctx) { return __awaiter(_this, void 0, void 0, function () {
+    var id, detailPlan, todoList, e_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                id = ctx.params.id;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, detailPlan_1.default.findById(id).exec()];
+            case 2:
+                detailPlan = _a.sent();
+                if (!detailPlan) {
+                    ctx.status = 404;
+                    return [2 /*return*/];
+                }
+                todoList = detailPlan.todoList;
+                ctx.body = todoList;
+                ctx.status = 200;
+                return [3 /*break*/, 4];
+            case 3:
+                e_4 = _a.sent();
+                ctx.throw(e_4, 500);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+var readTodo = function (ctx) { return __awaiter(_this, void 0, void 0, function () {
+    var _a, id, index, detailPlan, existingTodo, willReadTodo, e_5;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = ctx.params, id = _a.id, index = _a.index;
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, detailPlan_1.default.findById(id).exec()];
+            case 2:
+                detailPlan = _b.sent();
+                if (!detailPlan) {
+                    ctx.status = 404;
+                    return [2 /*return*/];
+                }
+                existingTodo = detailPlan.todoList;
+                willReadTodo = existingTodo[parseInt(index, 10)];
+                ctx.body = {
+                    todo: willReadTodo,
+                };
+                ctx.status = 200;
+                return [3 /*break*/, 4];
+            case 3:
+                e_5 = _b.sent();
+                ctx.throw(e_5, 500);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+var addTodo = function (ctx) { return __awaiter(_this, void 0, void 0, function () {
+    var id, todo, detailPlan, existingTodoList, updatedDetailPlan, e_6;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                id = ctx.params.id;
+                todo = ctx.request.body.todo;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, detailPlan_1.default.findById(id).exec()];
+            case 2:
+                detailPlan = _a.sent();
+                if (!detailPlan) {
+                    ctx.status = 404;
+                    return [2 /*return*/];
+                }
+                existingTodoList = detailPlan.todoList;
+                existingTodoList.push(todo);
+                return [4 /*yield*/, detailPlan_1.default.findByIdAndUpdate(id, {
+                        todoList: existingTodoList,
+                    }, { new: true }).exec()];
+            case 3:
+                updatedDetailPlan = _a.sent();
+                ctx.body = updatedDetailPlan;
+                ctx.status = 200;
+                return [3 /*break*/, 5];
+            case 4:
+                e_6 = _a.sent();
+                ctx.throw(e_6, 500);
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+var editTodo = function (ctx) { return __awaiter(_this, void 0, void 0, function () {
+    var _a, id, index, todo, detailPlan, existingTodoList, e_7;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = ctx.params, id = _a.id, index = _a.index;
+                todo = ctx.request.body.todo;
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, detailPlan_1.default.findById(id).exec()];
+            case 2:
+                detailPlan = _b.sent();
+                if (!detailPlan) {
+                    ctx.status = 404;
+                    return [2 /*return*/];
+                }
+                existingTodoList = detailPlan.todoList;
+                existingTodoList[parseInt(index, 10)] = todo;
+                return [4 /*yield*/, detailPlan_1.default.findByIdAndUpdate(id, {
+                        todoList: existingTodoList,
+                    }, { new: true }).exec()];
+            case 3:
+                detailPlan = _b.sent();
+                ctx.body = detailPlan;
+                ctx.status = 200;
+                return [3 /*break*/, 5];
+            case 4:
+                e_7 = _b.sent();
+                ctx.throw(e_7, 500);
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+var removeTodo = function (ctx) { return __awaiter(_this, void 0, void 0, function () {
+    var _a, id, index, detailPlan, existingTodo, e_8;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = ctx.params, id = _a.id, index = _a.index;
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, detailPlan_1.default.findById(id).exec()];
+            case 2:
+                detailPlan = _b.sent();
+                if (!detailPlan) {
+                    ctx.status = 404;
+                    return [2 /*return*/];
+                }
+                existingTodo = detailPlan.todoList;
+                existingTodo = existingTodo.filter(function (todo, i) {
+                    return parseInt(index, 10) !== i;
+                });
+                return [4 /*yield*/, detailPlan_1.default.findByIdAndUpdate(id, {
+                        todoList: existingTodo,
+                    }, { new: true }).exec()];
+            case 3:
+                detailPlan = _b.sent();
+                if (detailPlan === undefined || detailPlan === null) {
+                    ctx.status = 404;
+                    return [2 /*return*/];
+                }
+                ctx.body = detailPlan.todoList;
+                ctx.status = 200;
+                return [3 /*break*/, 5];
+            case 4:
+                e_8 = _b.sent();
+                ctx.throw(e_8, 500);
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+exports.default = {
+    checkObjectId: checkObjectId,
+    read: read,
+    create: create,
+    remove: remove,
+    update: update,
+    addTodo: addTodo,
+    removeTodo: removeTodo,
+    editTodo: editTodo,
+    readTodo: readTodo,
+    listTodo: listTodo,
+};

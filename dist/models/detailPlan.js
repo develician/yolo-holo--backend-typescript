@@ -10,9 +10,18 @@ exports.DetailPlan = new Schema({
     username: String,
     day: Number,
     destName: String,
-    latitude: Number,
-    longitude: Number,
-    placeId: String,
+    latitude: {
+        type: Number,
+        default: null,
+    },
+    longitude: {
+        type: Number,
+        default: null,
+    },
+    placeId: {
+        type: String,
+        default: null,
+    },
     todoList: [String],
     googleMapEnabled: Boolean,
     createdAt: {

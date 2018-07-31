@@ -7,9 +7,9 @@ export interface DetailPlan extends mongoose.Document {
   username: string;
   day: number;
   destName: string;
-  latitude: number;
-  longitude: number;
-  placeId: string;
+  latitude?: number;
+  longitude?: number;
+  placeId?: string;
   todoList: string[];
   googleMapEnabled: boolean;
   createdAt: Date;
@@ -20,9 +20,18 @@ export const DetailPlan: any = new Schema({
   username: String,
   day: Number,
   destName: String,
-  latitude: Number,
-  longitude: Number,
-  placeId: String,
+  latitude: {
+    type: Number,
+    default: null,
+  },
+  longitude: {
+    type: Number,
+    default: null,
+  },
+  placeId: {
+    type: String,
+    default: null,
+  },
   todoList: [String],
   googleMapEnabled: Boolean,
   createdAt: {
