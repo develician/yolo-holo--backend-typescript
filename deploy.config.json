@@ -1,0 +1,9 @@
+{
+    "apps": [{
+      "name": "server",
+      "script": "./dist",
+      "env": {
+        "NODE_PATH": "dist"
+      }
+    }]
+  }
