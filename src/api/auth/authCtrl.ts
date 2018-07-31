@@ -112,6 +112,11 @@ const login = async (ctx: any) => {
       $or: [{ 'profile.username': email }, { email }],
     }).exec();
 
+    if (account !== null && account.social.facebook.id !== undefined) {
+      ctx.status = 409;
+      return;
+    }
+
     if (!account || !validatePassword(password, account.password)) {
       console.log('403');
       ctx.status = 403;

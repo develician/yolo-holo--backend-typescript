@@ -163,6 +163,10 @@ var login = function (ctx) { return __awaiter(_this, void 0, void 0, function ()
                     }).exec()];
             case 2:
                 account = _b.sent();
+                if (account !== null && account.social.facebook.id !== undefined) {
+                    ctx.status = 409;
+                    return [2 /*return*/];
+                }
                 if (!account || !validatePassword(password, account.password)) {
                     console.log('403');
                     ctx.status = 403;
